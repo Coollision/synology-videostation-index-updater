@@ -34,15 +34,17 @@ func ServeMetrics(cfg *Config) {
 
 	metrics.server = &http.Server{
 		Addr:         fmt.Sprintf(":%v", metrics.cfg.Port),
-		WriteTimeout: time.Minute * 5, // this is high because a request can take long to write
-		ReadTimeout:  time.Minute * 2,
-		IdleTimeout:  time.Minute * 2,
+		WriteTimeout: time.Second *30,
+		ReadTimeout:  time.Second *30,
+		IdleTimeout:  time.Second * 30,
 		Handler:      mux,
 	}
 
 	go func() {
 		if err := metrics.server.ListenAndServe(); err != http.ErrServerClosed {
-			logrus.Errorf("Failed to start server: %v", err)
+			logrus.Errorf("Failed to start server: %v", err)  // not killing app if metrics is not running,
+																	// if this is needed let kube do this with a probe
+																	// otherwise metrics are not that important
 		}
 	}()
 
@@ -50,7 +52,6 @@ func ServeMetrics(cfg *Config) {
 
 // DestroyMetrics stop serving metrics and clear all global vars in this package
 func DestroyMetrics() {
-
 	isRunning = false
 	metrics = nil
 }

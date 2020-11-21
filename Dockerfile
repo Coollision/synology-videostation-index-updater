@@ -1,5 +1,5 @@
 FROM arm32v7/alpine:latest
 
-ADD TorrentFetcher /
+ADD synology-videostation-reindexer /
 
-ENTRYPOINT ["/TorrentFetcher"]
+ENTRYPOINT ["/synology-videostation-reindexer"]

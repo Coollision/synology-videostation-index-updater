@@ -5,34 +5,39 @@ import (
 	"crypto/rsa"
 	"encoding/base64"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"github.com/Luzifer/go-openssl/v4"
 	"github.com/prometheus/common/log"
-	"io/ioutil"
 	"math/big"
-	"net/http"
 	"net/url"
+	"synology-videostation-reindexer/synology/api"
+	config2 "synology-videostation-reindexer/synology/config"
+	"synology-videostation-reindexer/synology/data"
 )
 
 type SynoStuff struct {
-	config *Config
+	config *config2.Config
+	api    api.Api
 }
 
 type synoSession struct {
 }
 
-func NewSynoStuff(config *Config) *SynoStuff {
-	return &SynoStuff{config: config}
+func NewSynoStuff(config *config2.Config) *SynoStuff {
+	api:= api.NewSynoAPI(config)
+	return &SynoStuff{config: config, api:api}
 }
 
 func (syno *SynoStuff) Update() error {
-	_, _ = syno.login()
-	return nil
+	_, err := syno.login()
+	return err
 }
 
 func (syno *SynoStuff) login() (*synoSession, error) {
-	encryptionInfo := syno.getEncryptionInfo()
+	encryptionInfo, err := syno.getEncryptionInfo()
+	if err != nil{
+		return nil, err
+	}
 
 	n, ok := new(big.Int).SetString(encryptionInfo.PublicKey, 16)
 	if !ok {
@@ -44,7 +49,7 @@ func (syno *SynoStuff) login() (*synoSession, error) {
 		E: 65537, // value plucked from https://github.com/openstack/cinder/blob/61d506880eafcfcfee9047ac182a45d555e32a22/cinder/volume/drivers/synology/synology_common.py#L243
 	}
 
-	bytes := make([]byte, 50) //generate a random 32 byte key for AES-256
+	bytes := make([]byte, 50) //generate a random key for AES-256
 	if _, err := rand.Read(bytes); err != nil {
 		panic(err.Error())
 	}
@@ -60,54 +65,49 @@ func (syno *SynoStuff) login() (*synoSession, error) {
 	params.Add("passwd", syno.config.UserPassword)
 	params.Add("session", "dsm")
 	params.Add("format", "sid")
-	params.Add(encryptionInfo.Ciphertoken, fmt.Sprintf("%d", encryptionInfo.ServerTime))
+	params.Add(encryptionInfo.CipherToken, fmt.Sprintf("%d", encryptionInfo.ServerTime))
 	encodedParams := []byte(params.Encode())
 
 	o := openssl.New()
-
 	enc, err := o.EncryptBytes(pass, encodedParams, openssl.BytesToKeyMD5)
 	if err != nil {
-		fmt.Printf("An error occurred: %s\n", err)
+		panic(fmt.Sprintf("An error occurred: %s\n", err))
 	}
 
 	const loginUrl = `%s/webapi/auth.cgi`
 
-	data := url.Values{}
-	data.Add("api", "SYNO.API.Auth")
-	data.Add("method", "login")
-	data.Add("version", "6")
-	data.Add(encryptionInfo.Cipherkey,
-		`{"rsa": "`+base64.StdEncoding.EncodeToString(encryptedPass)+`","aes": "`+string(enc)+`"}`)
-
-
-	resp, err := http.PostForm(fmt.Sprintf(loginUrl, syno.config.Url), data)
-	if err != nil {
-		panic(err.Error())
+	req := data.ReqLogin{
+		Api:     "SYNO.API.Auth",
+		Method:  "login",
+		Version: 6,
 	}
+	options:= api.NewOptions().AddParam(
+		encryptionInfo.CipherKey,
+		`{"rsa": "`+base64.StdEncoding.EncodeToString(encryptedPass)+`","aes": "`+string(enc)+`"}`,
+		)
 
-	respData, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(respData))
+	resp:= &data.RespLogin{}
+	err = syno.api.Request(loginUrl, req, resp, options)
+	if err!= nil{
+		return nil,err
+	}
+	fmt.Printf("%+v\n",*resp)
 
 	return nil, nil
 }
 
-func (syno *SynoStuff) getEncryptionInfo() *encryptionInfo {
+func (syno *SynoStuff) getEncryptionInfo() (data.RespEncryption, error) {
 	const encryptionInfoURL = `%s/webapi/encryption.cgi`
-
-	data := url.Values{}
-	data.Add("api", "SYNO.API.Encryption")
-	data.Add("method", "getinfo")
-	data.Add("version", "1")
-	data.Add("format", "module")
-
-	get, err := http.PostForm(fmt.Sprintf(encryptionInfoURL, syno.config.Url), data)
+	req := data.ReqEncryption{
+		Api:     "SYNO.API.Encryption",
+		Method:  "getinfo",
+		Version: 1,
+		Format:  "module",
+	}
+	info := &data.RespEncryption{}
+	err := syno.api.Request(encryptionInfoURL, req, info)
 	if err != nil {
 		panic(err.Error())
 	}
-	info := &encryptionInfo{}
-	err = json.NewDecoder(get.Body).Decode(info)
-	if err != nil {
-		panic(err.Error())
-	}
-	return info
+	return *info , nil
 }

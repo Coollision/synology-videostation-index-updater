@@ -69,7 +69,7 @@ func (s *Server) initMiddleware() {
 func (s *Server) InitHTTPServer() {
 	s.server = &http.Server{
 		Addr:         fmt.Sprintf(":%v", s.cfg.Port),
-		WriteTimeout: time.Minute * 5, // this is high because a request can take long to write
+		WriteTimeout: time.Minute * 2,
 		ReadTimeout:  time.Minute * 2,
 		IdleTimeout:  time.Minute * 2,
 		Handler:      s.router,

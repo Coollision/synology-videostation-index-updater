@@ -12,6 +12,7 @@ import (
 	"synology-videostation-reindexer/api"
 	"synology-videostation-reindexer/metrics"
 	"synology-videostation-reindexer/synology"
+	synoConf "synology-videostation-reindexer/synology/config"
 
 	"github.com/gosidekick/goconfig"
 	_ "github.com/gosidekick/goconfig/toml"
@@ -21,12 +22,12 @@ import (
 // Version is filled in by makefile when building (only in the main...)
 var version string
 
-//Config the large config struct
+//Config the large config struct that contains the whole app config
 type Config struct {
 	LogLevel       string `cfgDefault:"DEBUG"`
 	ServerConfig   api.Config
 	MetricsConfig  metrics.Config
-	SynologyConfig synology.Config
+	SynologyConfig synoConf.Config
 }
 
 func main() {
