@@ -9,16 +9,16 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"net/url"
+	"strings"
 	"synology-videostation-reindexer/synology/config"
-	"synology-videostation-reindexer/synology/data"
+	"synology-videostation-reindexer/synology/internal/data"
 )
 
 type Api interface {
 	//Request
 	//{url} needs to start with % sign, because it will be Sprintfed with the baseURL
 	//{req} the struct containing the request data, preferably form inside the data package.
-	Request(urlDest string, req interface{}, resp interface{}, options ...options) error
+	Request(urlDest string, req interface{}, resp interface{}, options ...Options) error
 }
 
 type api struct {
@@ -37,57 +37,41 @@ func NewSynoAPI(config *config.Config) *api {
 
 }
 
-//options ...
-type options struct {
-	auth             string
-	AdditionalParams map[string]string
-}
-
-func NewOptions() options { return options{} }
-
-func (o options) AddParam(key, value string) options{
-	if o.AdditionalParams == nil{
-		o.AdditionalParams = map[string]string{}
-	}
-	o.AdditionalParams[key]=value
-	return o
-}
-
-func (o options) addParams(values url.Values) url.Values {
-	if o.AdditionalParams != nil {
-		for ak, ap := range o.AdditionalParams {
-			values.Add(ak, ap)
-		}
-	}
-	return values
-}
-
-func (api *api) Request(urlDest string, req interface{}, resp interface{}, optionss ...options) error {
-	var options options
+func (api *api) Request(urlDest string, req interface{}, resp interface{}, optionss ...Options) error {
+	options := Options{}
 	if len(optionss) == 1 {
 		options = optionss[0]
 	}
+
 	dataEncoded, err := api.encoder.Encode(req)
 	if err != nil {
 		return err
 	}
-
-	dataEncoded = options.addParams(dataEncoded)
+	options.addParams(&dataEncoded)
 
 	url := fmt.Sprintf(urlDest, api.config.Url)
+	logrus.WithField("syno","api").Trace(dataEncoded.Encode())
+	request, err := http.NewRequest(http.MethodPost, url, strings.NewReader(dataEncoded.Encode()))
+	if err != nil {
+		return err
+	}
+	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-	post, err := api.client.PostForm(url, dataEncoded)
+	//post, err := api.client.PostForm(url, dataEncoded)
+	post, err := api.client.Do(request)
 	if err != nil {
 		return err
 	}
 	response := &data.Resp{}
 
-	////for debugging all requests to syno
+	////for debugging all responses from syno
 	//dump, err := httputil.DumpResponse(post, true)
 	//if err != nil {
 	//	panic(err.Error())
 	//}
 	//logrus.WithField("syno","api").Traceln(string(dump))
+	//get := post.Header.Get("Set-Cookie")
+	//fmt.Println("cookie: " + get)
 
 	err = json.NewDecoder(post.Body).Decode(response)
 	if err != nil {
@@ -95,11 +79,12 @@ func (api *api) Request(urlDest string, req interface{}, resp interface{}, optio
 	}
 
 	if !response.Success {
-		logrus.WithField("syno", "api").Errorf("response is %+v", response)
+		logrus.WithField("syno", "api").Errorf("response is %#v", response)
 		return errors.New("failed to get a successful response")
 	}
 
 	err = mapstructure.Decode(response.Data, resp)
+	logrus.WithField("syno", "api").Tracef("%#v", response)
 
 	return err
 }

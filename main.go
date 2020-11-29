@@ -46,9 +46,7 @@ func main() {
 	// Start Metrics server
 	metrics.ServeMetrics(&cfg.MetricsConfig)
 
-	syno := synology.NewSynoStuff(&cfg.SynologyConfig)
-	syno.Update()
-
+	syno := synology.NewVideoRequests(&cfg.SynologyConfig)
 
 	srv := api.NewServer(&cfg.ServerConfig, syno)
 	go srv.Start()
@@ -135,5 +133,5 @@ func logReflectValue(v reflect.Value, level int, name string) {
 func Log(cfg interface{}) {
 	rootElem := reflect.ValueOf(cfg).Elem()
 	logReflectValue(rootElem, 0, "configuration")
-	logrus.Infof("----------------------------")
+	logrus.Infof("---------------------------------")
 }

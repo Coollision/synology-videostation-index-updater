@@ -20,14 +20,14 @@ import (
 // Server >>>
 type Server struct {
 	cfg  *Config
-	syno *synology.SynoStuff
+	syno *synology.VideoAPI
 
 	router *chi.Mux
 	server *http.Server
 }
 
 // NewServer >>>
-func NewServer(cfg *Config, syno *synology.SynoStuff) *Server {
+func NewServer(cfg *Config, syno *synology.VideoAPI) *Server {
 	server := &Server{
 		cfg:  cfg,
 		syno: syno,

@@ -9,12 +9,8 @@ func (s *Server) bla(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s Server) reIndex(w http.ResponseWriter, r *http.Request)  {
-	err := s.syno.Update()
-	if err != nil{
-		panic(err)
-	}
-	_, err = w.Write([]byte("started reindexing"))
+func (s *Server) reIndex(w http.ResponseWriter, r *http.Request)  {
+	_, err := w.Write([]byte("started reindexing"))
 	if err != nil{
 		panic(err)
 	}
