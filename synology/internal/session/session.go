@@ -17,21 +17,22 @@ type synoSession struct {
 	isLoggedIn   bool
 	sid          string
 	keepLoggedIn chan struct{}
+	endSession   chan struct{}
 	api          api.Api
 	config       *config.Config
 	name         string
 }
 
-func NewSynoSession(config *config.Config, name string) (ses *synoSession, rErr error) {
+func NewSynoSession(config *config.Config, name string) (ses *synoSession) {
 	ses = &synoSession{
 		config:       config,
 		api:          api.NewSynoAPI(config),
 		isLoggedIn:   false,
 		keepLoggedIn: make(chan struct{}, 0),
+		endSession:   make(chan struct{}, 0),
 		name:         name,
 	}
 	go ses.logoutTimer()
-	rErr = ses.login()
 	return
 }
 
@@ -54,6 +55,17 @@ func (s *synoSession) Request(urlDest string, req interface{}, resp interface{},
 	return s.api.Request(urlDest, req, resp, options)
 }
 
+func (s *synoSession) EndSession() {
+	if err := s.logout(); err != nil {
+		panic(err)
+	}
+	s.endSession <- struct{}{}
+	s.name = ""
+	close(s.keepLoggedIn)
+	close(s.endSession)
+	s.api = nil
+	s.config = nil
+}
 
 func (s *synoSession) login() error {
 	encryptionInfo, err := s.getEncryptionInfo()
@@ -122,10 +134,12 @@ func (s *synoSession) logoutTimer() {
 		select {
 		case <-time.After(logout):
 			err := s.logout()
-			if err != nil{
+			if err != nil {
 				panic(err)
 			}
 		case <-s.keepLoggedIn:
+		case <-s.endSession:
+			return
 		}
 	}
 }

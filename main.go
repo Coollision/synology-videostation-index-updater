@@ -6,12 +6,12 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+	"synology-videostation-reindexer/synology/videostation"
 	"syscall"
 	"time"
 
 	"synology-videostation-reindexer/api"
 	"synology-videostation-reindexer/metrics"
-	"synology-videostation-reindexer/synology"
 	synoConf "synology-videostation-reindexer/synology/config"
 
 	"github.com/gosidekick/goconfig"
@@ -46,9 +46,10 @@ func main() {
 	// Start Metrics server
 	metrics.ServeMetrics(&cfg.MetricsConfig)
 
-	syno := synology.NewVideoRequests(&cfg.SynologyConfig)
+	videoAPI := videostation.NewVideoRequests(&cfg.SynologyConfig)
+	videoAPI.ListLibraries()
 
-	srv := api.NewServer(&cfg.ServerConfig, syno)
+	srv := api.NewServer(&cfg.ServerConfig, videoAPI)
 	go srv.Start()
 	defer srv.Stop()
 

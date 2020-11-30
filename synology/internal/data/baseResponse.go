@@ -16,5 +16,4 @@ type Req struct {
 	Api string `form:"api,omitempty"`
 	Method string `form:"method,omitempty"`
 	Version int `form:"version,omitempty"`
-	Format string `form:"format,omitempty"`
 }

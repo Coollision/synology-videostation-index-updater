@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"synology-videostation-reindexer/synology"
+	"synology-videostation-reindexer/synology/videostation"
 	"time"
 
 	mdw "synology-videostation-reindexer/api/middleware"
@@ -19,18 +19,18 @@ import (
 
 // Server >>>
 type Server struct {
-	cfg  *Config
-	syno *synology.VideoAPI
+	cfg      *Config
+	videoAPI *videostation.VideoAPI
 
 	router *chi.Mux
 	server *http.Server
 }
 
 // NewServer >>>
-func NewServer(cfg *Config, syno *synology.VideoAPI) *Server {
+func NewServer(cfg *Config, syno *videostation.VideoAPI) *Server {
 	server := &Server{
-		cfg:  cfg,
-		syno: syno,
+		cfg:      cfg,
+		videoAPI: syno,
 	}
 
 	server.InitRouter()
