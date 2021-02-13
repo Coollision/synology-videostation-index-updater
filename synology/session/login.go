@@ -23,7 +23,7 @@ func (s *synoSession) getEncryptionInfo() (data.RespEncryption, error) {
 	info := &data.RespEncryption{}
 	err := s.api.Request(encryptionInfoURL, req, info)
 	if err != nil {
-		panic(err.Error())
+		return data.RespEncryption{}, fmt.Errorf(`failed to get encryption info: %w` ,err)
 	}
 	return *info, nil
 }

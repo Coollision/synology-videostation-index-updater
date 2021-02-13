@@ -13,6 +13,7 @@ import (
 	"synology-videostation-reindexer/api"
 	"synology-videostation-reindexer/metrics"
 	synoConf "synology-videostation-reindexer/synology/config"
+	"synology-videostation-reindexer/synology/session"
 
 	"github.com/gosidekick/goconfig"
 	_ "github.com/gosidekick/goconfig/toml"
@@ -46,8 +47,9 @@ func main() {
 	// Start Metrics server
 	metrics.ServeMetrics(&cfg.MetricsConfig)
 
-	videoAPI := videostation.NewVideoRequests(&cfg.SynologyConfig)
-	videoAPI.ListLibraries()
+	synoApi := session.NewSynoSession(&cfg.SynologyConfig, "synoAPi")
+	videoAPI := videostation.NewVideoRequests(synoApi)
+
 
 	srv := api.NewServer(&cfg.ServerConfig, videoAPI)
 	go srv.Start()
@@ -64,6 +66,7 @@ func main() {
 	// Stop all background work, previously defined with defers
 	logrus.Info("Received a quit signal. Stopping background work now...")
 
+	defer synoApi.EndSession()
 	// Shut down
 	defer shutdown()
 }

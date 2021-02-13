@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/go-chi/chi/middleware"
 	"net/http"
 	"strings"
 
@@ -11,13 +12,22 @@ import (
 
 func (s *Server) initRoutes() {
 	r := s.router
-	r.Route("/bla", func(r chi.Router) {
-		r.Get("/", s.bla)
+
+	r.Route("/video", func(r chi.Router){
+		r.Use(middleware.BasicAuth("video",
+			map[string]string{
+			"test":"123",
+		}))
+		r.Route("/locations",func(r chi.Router){
+			r.Get("/", s.ListLibraries)
+			r.Get("/{library}", s.ListShares)
+			r.Get("/{library}/{share}/reindex", s.reIndex)
+		})
 	})
 
-	r.Route("/reindex", func(r chi.Router) {
-		r.Get("/", s.reIndex)
-	})
+	r.Get("/teapot", s.Teapot)
+	r.Get("/notimplemented", s.NotImplemented)
+
 }
 
 // Routes >>>

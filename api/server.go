@@ -20,14 +20,14 @@ import (
 // Server >>>
 type Server struct {
 	cfg      *Config
-	videoAPI *videostation.VideoAPI
+	videoAPI videostation.VideoAPI
 
 	router *chi.Mux
 	server *http.Server
 }
 
 // NewServer >>>
-func NewServer(cfg *Config, syno *videostation.VideoAPI) *Server {
+func NewServer(cfg *Config, syno videostation.VideoAPI) *Server {
 	server := &Server{
 		cfg:      cfg,
 		videoAPI: syno,
@@ -69,9 +69,9 @@ func (s *Server) initMiddleware() {
 func (s *Server) InitHTTPServer() {
 	s.server = &http.Server{
 		Addr:         fmt.Sprintf(":%v", s.cfg.Port),
-		WriteTimeout: time.Minute * 2,
-		ReadTimeout:  time.Minute * 2,
-		IdleTimeout:  time.Minute * 2,
+		WriteTimeout: time.Minute,
+		ReadTimeout:  time.Minute,
+		IdleTimeout:  time.Minute,
 		Handler:      s.router,
 	}
 }
@@ -92,3 +92,5 @@ func (s *Server) Stop() {
 		logrus.Errorf("Failed to shutdown server: %v", err)
 	}
 }
+
+

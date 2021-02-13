@@ -3,7 +3,6 @@ package api
 import (
 	"crypto/tls"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/go-playground/form/v4"
 	"github.com/mitchellh/mapstructure"
@@ -70,8 +69,7 @@ func (api *api) Request(urlDest string, req interface{}, resp interface{}, optio
 	//	panic(err.Error())
 	//}
 	//logrus.WithField("syno","api").Traceln(string(dump))
-	//get := post.Header.Get("Set-Cookie")
-	//fmt.Println("cookie: " + get)
+
 
 	err = json.NewDecoder(post.Body).Decode(response)
 	if err != nil {
@@ -79,8 +77,8 @@ func (api *api) Request(urlDest string, req interface{}, resp interface{}, optio
 	}
 
 	if !response.Success {
-		logrus.WithField("syno", "api").Errorf("response is %#v", response)
-		return errors.New("failed to get a successful response")
+		logrus.WithField("syno", "api").Errorf("failed to get a successful response but got reason: %s", response.Reason)
+		return fmt.Errorf("failed to get a successful response but got reason: %s", response.Reason)
 	}
 
 	err = mapstructure.Decode(response.Data, resp)

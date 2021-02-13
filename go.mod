@@ -11,7 +11,7 @@ require (
 	github.com/go-playground/form/v4 v4.1.1
 	github.com/gosidekick/goconfig v1.3.0
 	github.com/mitchellh/mapstructure v1.3.3
+	github.com/oceanicdev/chi-param v1.1.0
 	github.com/prometheus/client_golang v1.8.0
-	github.com/prometheus/common v0.14.0
 	github.com/sirupsen/logrus v1.7.0
 )
