@@ -1,4 +1,4 @@
-package apiResponses
+package response
 
 import (
 	"github.com/go-chi/render"

@@ -13,21 +13,29 @@ import (
 func (s *Server) initRoutes() {
 	r := s.router
 
-	r.Route("/video", func(r chi.Router){
-		r.Use(middleware.BasicAuth("video",
-			map[string]string{
-			"test":"123",
-		}))
-		r.Route("/locations",func(r chi.Router){
-			r.Get("/", s.ListLibraries)
-			r.Get("/{library}", s.ListShares)
-			r.Get("/{library}/{share}/reindex", s.reIndex)
-		})
-	})
+	if s.cfg.EnableVideoAPI {
+		s.videoAPIRoutes()
+	}
+	if s.cfg.EnableRadarr {
+		s.radarrRoute()
+	}
+	if s.cfg.EnableSonarr{
+		s.sonarrRoute()
+	}
+
 
 	r.Get("/teapot", s.Teapot)
 	r.Get("/notimplemented", s.NotImplemented)
 
+}
+
+func (s Server) addAuthIfNeeded(r chi.Router) {
+	if s.cfg.Authentication {
+		r.Use(middleware.BasicAuth("",
+			map[string]string{
+				s.cfg.UserName: s.cfg.UserPassword,
+			}))
+	}
 }
 
 // Routes >>>

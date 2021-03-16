@@ -1,4 +1,4 @@
-package apiResponses
+package response
 
 import (
 	"fmt"
@@ -56,7 +56,7 @@ func ErrInvalidRequest(err error) ErrResponse {
 func ErrInvalidRequestN(errors []string) ErrResponse {
 	return ErrResponse{
 		HTTPStatusCode: http.StatusBadRequest,
-		StatusText:     "Invalid request.",
+		StatusText:     "Bad request.",
 		ErrorList:      errors,
 	}
 }

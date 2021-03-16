@@ -94,7 +94,7 @@ func customLogging(logLevel string) {
 		logrus.FieldKeyLevel: "lvl",
 		logrus.FieldKeyMsg:   "msg",
 	}
-	// get mesage as last value
+	// get message as last value
 	msgIsLastValue := func(s []string) {
 		sort.Slice(s, func(i, j int) bool {
 			if s[j] == "msg" {

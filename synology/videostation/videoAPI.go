@@ -2,14 +2,17 @@ package videostation
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"synology-videostation-reindexer/synology/internal/api"
 	"synology-videostation-reindexer/synology/internal/data"
 )
 
+var log = logrus.WithField("", "")
+
 type VideoAPI interface {
 	ListLibraries() ([]string, error)
 	ListSharesIn(string) ([]string, error)
-	ReIndexShare(library, share string) error
+	ReIndexShare( share string) error
 }
 
 
@@ -63,11 +66,12 @@ func (vApi *videoAPI) ListSharesIn(library string) ([]string, error) {
 		shares = append(shares, resp.Folders[kl].Share)
 	}
 
+	log.Debug(`in library "%s" there are the following shares  `, library, shares)
 	return shares, nil
 }
 
 
-func (vApi *videoAPI) ReIndexShare(library, share string) error {
+func (vApi *videoAPI) ReIndexShare(share string) error {
 	url := "%s/webman/3rdparty/VideoStation/cgi/folder_manage.cgi"
 	req := struct {
 		Action string `form:"action"`
@@ -81,6 +85,6 @@ func (vApi *videoAPI) ReIndexShare(library, share string) error {
 	if err != nil {
 		panic(err)
 	}
-
+	log.Infof("reindexing started for share: %s", share)
 	return  nil
 }
