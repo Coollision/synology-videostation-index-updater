@@ -16,7 +16,7 @@
 
 synology-videostation-reindexer
 
-synology-videostation-reindexer.iml
+*.iml
 
 *.toml
 /builds
