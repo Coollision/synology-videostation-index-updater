@@ -9,8 +9,6 @@ import (
 
 	mdw "synology-videostation-reindexer/api/middleware"
 
-	"github.com/Remitly/chi-prometheus"
-
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
@@ -52,8 +50,6 @@ func (s *Server) initMiddleware() {
 	s.router.Use(
 		mdw.Routes("/", s.Routes),
 		middleware.Heartbeat("/status"),
-
-		chiprometheus.NewMiddleware("synology-videostation-reindexer"),
 
 		middleware.RequestID,
 		middleware.RedirectSlashes,

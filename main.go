@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"synology-videostation-reindexer/api"
-	"synology-videostation-reindexer/metrics"
 	synoConf "synology-videostation-reindexer/synology/config"
 	"synology-videostation-reindexer/synology/session"
 
@@ -27,7 +26,6 @@ var version string
 type Config struct {
 	LogLevel       string `cfgDefault:"DEBUG"`
 	ServerConfig   api.Config
-	MetricsConfig  metrics.Config
 	SynologyConfig synoConf.Config
 }
 
@@ -43,9 +41,6 @@ func main() {
 	}
 	Log(cfg)
 	customLogging(cfg.LogLevel)
-
-	// Start Metrics server
-	metrics.ServeMetrics(&cfg.MetricsConfig)
 
 	synoApi := session.NewSynoSession(&cfg.SynologyConfig, "synoAPi")
 	videoAPI := videostation.NewVideoRequests(synoApi)
