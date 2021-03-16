@@ -1,4 +1,4 @@
-package api
+package videostation
 
 import (
 	"github.com/go-chi/chi"
@@ -7,24 +7,24 @@ import (
 	"synology-videostation-reindexer/apiModel/response"
 )
 
-func (s Server) videoAPIRoutes() {
-	s.router.Route("/video", func(r chi.Router) {
-		s.addAuthIfNeeded(r)
+func (v *videoAPI) AddHandlers(router chi.Router, addAuthIfNeeded func(chi.Router)) {
+	router.Route("/video", func(r chi.Router) {
+		addAuthIfNeeded(r)
 		r.Route("/locations", func(r chi.Router) {
-			r.Get("/", s.listLibraries)
-			r.Get("/{library}", s.listShares)
-			r.Get("/{library}/{share}/reindex", s.reIndex)
+			r.Get("/", v.listLibraries)
+			r.Get("/{library}", v.listShares)
+			r.Get("/{library}/{share}/reindex", v.reIndex)
 		})
 	})
 }
 
-func (s Server) listShares(w http.ResponseWriter, r *http.Request) {
+func (v videoAPI) listShares(w http.ResponseWriter, r *http.Request) {
 	library, err := param.String(r, "library")
 	if err != nil {
 		response.Render(w, r, response.ErrBadRequest(err))
 		return
 	}
-	resp, err := s.videoAPI.ListSharesIn(library)
+	resp, err := v.ListSharesIn(library)
 	if err != nil {
 		errResp := response.ErrorToRenderer(err)
 		response.Render(w, r, errResp)
@@ -33,8 +33,8 @@ func (s Server) listShares(w http.ResponseWriter, r *http.Request) {
 	response.Render(w, r, response.StringArray(resp))
 }
 
-func (s *Server) listLibraries(w http.ResponseWriter, r *http.Request) {
-	resp, err := s.videoAPI.ListLibraries()
+func (v *videoAPI) listLibraries(w http.ResponseWriter, r *http.Request) {
+	resp, err := v.ListLibraries()
 	if err != nil {
 		errResp := response.ErrorToRenderer(err)
 		response.Render(w, r, errResp)
@@ -43,14 +43,14 @@ func (s *Server) listLibraries(w http.ResponseWriter, r *http.Request) {
 	response.Render(w, r, response.StringArray(resp))
 }
 
-func (s *Server) reIndex(w http.ResponseWriter, r *http.Request) {
+func (v *videoAPI) reIndex(w http.ResponseWriter, r *http.Request) {
 	share, err := param.String(r, "share")
 	if err != nil {
 		response.Render(w, r, response.ErrBadRequest(err))
 		return
 	}
 
-	err = s.videoAPI.ReIndexShare(share)
+	err = v.ReIndexShare(share)
 	if err != nil {
 		errResp := response.ErrorToRenderer(err)
 		response.Render(w, r, errResp)

@@ -15,6 +15,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type ServerExtension interface {
+	AddHandlers(router chi.Router, addAuthIfNeeded func(chi.Router))
+}
+
 // Server >>>
 type Server struct {
 	cfg      *Config
@@ -35,6 +39,11 @@ func NewServer(cfg *Config, syno videostation.VideoAPI) *Server {
 	server.InitHTTPServer()
 
 	return server
+}
+
+
+func (s *Server)ImportHandlers(extension ServerExtension){
+	extension.AddHandlers(s.router, s.addAuthIfNeeded)
 }
 
 // InitRouter >>>

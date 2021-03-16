@@ -1,4 +1,4 @@
-package api
+package sonarr
 
 import (
 	"github.com/go-chi/chi"
@@ -9,16 +9,18 @@ import (
 	"synology-videostation-reindexer/apiModel/response"
 )
 
-func (s Server) radarrRoute() {
-	s.router.Route("/radarr", func(r chi.Router) {
-		s.addAuthIfNeeded(r)
-		r.Post("/", s.radarr)
+type Hooks struct {}
+
+func (h Hooks) AddHandlers(router chi.Router, addAuthIfNeeded func(chi.Router)) {
+	router.Route("/sonarr", func(r chi.Router) {
+		addAuthIfNeeded(r)
+		r.Post("/", sonarr)
 	})
 }
 
-func (s *Server) radarr(w http.ResponseWriter, r *http.Request) {
-	log:= logrus.WithField("handlers","radarr")
-	data:= request.Radarr{}
+func sonarr(w http.ResponseWriter, r *http.Request) {
+	log:= logrus.WithField("handlers","sonarr")
+	data:= request.Sonarr{}
 	err := render.Bind(r, &data)
 	if err != nil{
 		log.Errorf("got a bad request %e", err)
@@ -30,6 +32,6 @@ func (s *Server) radarr(w http.ResponseWriter, r *http.Request) {
 		response.Render(w,r,response.String("test was successful"))
 		return
 	}
-	log.Info("videos started reindexing")
-	response.Render(w, r, response.String("videos reindexing started"))
+	log.Info("series started reindexing")
+	response.Render(w, r, response.String("series reindexing started"))
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"net/http"
 	"strings"
+	"synology-videostation-reindexer/apiModel/response"
 
 	"github.com/go-chi/chi"
 	"github.com/sirupsen/logrus"
@@ -13,21 +14,19 @@ import (
 func (s *Server) initRoutes() {
 	r := s.router
 
-	if s.cfg.EnableVideoAPI {
-		s.videoAPIRoutes()
-	}
-	if s.cfg.EnableRadarr {
-		s.radarrRoute()
-	}
-	if s.cfg.EnableSonarr{
-		s.sonarrRoute()
-	}
-
-
 	r.Get("/teapot", s.Teapot)
 	r.Get("/notimplemented", s.NotImplemented)
 
 }
+
+func (s *Server) Teapot(w http.ResponseWriter, r *http.Request) {
+	response.Render(w, r, response.ErrTeapot())
+}
+
+func (s *Server) NotImplemented(w http.ResponseWriter, r *http.Request) {
+	response.Render(w, r, response.ErrNotImplemented())
+}
+
 
 func (s Server) addAuthIfNeeded(r chi.Router) {
 	if s.cfg.Authentication {

@@ -20,11 +20,13 @@ type videoAPI struct {
 	api    api.Api
 }
 
+
+
 func NewVideoRequests(api api.Api) *videoAPI {
 	return &videoAPI{ api: api}
 }
 
-func (vApi *videoAPI) ListLibraries() ([]string, error) {
+func (v *videoAPI) ListLibraries() ([]string, error) {
 	url := "%s/webapi/entry.cgi"
 	req := data.Req{
 		Api:     "SYNO.VideoStation2.Library",
@@ -32,7 +34,7 @@ func (vApi *videoAPI) ListLibraries() ([]string, error) {
 		Version: 1,
 	}
 	resp := &ListLibraryResponse{}
-	err := vApi.api.Request(url, req, resp)
+	err := v.api.Request(url, req, resp)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list Library Types: %w", err)
 	}
@@ -44,7 +46,7 @@ func (vApi *videoAPI) ListLibraries() ([]string, error) {
 	return types, nil
 }
 
-func (vApi *videoAPI) ListSharesIn(library string) ([]string, error) {
+func (v *videoAPI) ListSharesIn(library string) ([]string, error) {
 	url := "%s/webman/3rdparty/VideoStation/cgi/folder_manage.cgi"
 	req := struct {
 		Action string `form:"action"`
@@ -54,7 +56,7 @@ func (vApi *videoAPI) ListSharesIn(library string) ([]string, error) {
 		Section: library,
 	}
 	resp := &listSharesResponse{}
-	err := vApi.api.Request(url, req, resp)
+	err := v.api.Request(url, req, resp)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +73,7 @@ func (vApi *videoAPI) ListSharesIn(library string) ([]string, error) {
 }
 
 
-func (vApi *videoAPI) ReIndexShare(share string) error {
+func (v *videoAPI) ReIndexShare(share string) error {
 	url := "%s/webman/3rdparty/VideoStation/cgi/folder_manage.cgi"
 	req := struct {
 		Action string `form:"action"`
@@ -81,7 +83,7 @@ func (vApi *videoAPI) ReIndexShare(share string) error {
 		Share: share,
 	}
 	resp := &struct{}{}
-	err := vApi.api.Request(url, req, resp)
+	err := v.api.Request(url, req, resp)
 	if err != nil {
 		panic(err)
 	}
