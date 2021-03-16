@@ -66,7 +66,7 @@ func (vApi *videoAPI) ListSharesIn(library string) ([]string, error) {
 		shares = append(shares, resp.Folders[kl].Share)
 	}
 
-	log.Debug(`in library "%s" there are the following shares  `, library, shares)
+	log.Debugf(`in library "%s" there are the following shares %v`, library, shares)
 	return shares, nil
 }
 
