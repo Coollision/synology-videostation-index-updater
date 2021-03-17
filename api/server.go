@@ -29,10 +29,9 @@ type Server struct {
 }
 
 // NewServer >>>
-func NewServer(cfg *Config, syno videostation.VideoAPI) *Server {
+func NewServer(cfg *Config) *Server {
 	server := &Server{
 		cfg:      cfg,
-		videoAPI: syno,
 	}
 
 	server.InitRouter()

@@ -15,7 +15,7 @@ import (
 
 type Api interface {
 	//Request
-	//{url} needs to start with % sign, because it will be Sprintfed with the baseURL
+	//{url} needs to start with % sign, because it will be Sprinted with the baseURL
 	//{req} the struct containing the request data, preferably form inside the data package.
 	Request(urlDest string, req interface{}, resp interface{}, options ...Options) error
 }
@@ -36,6 +36,7 @@ func NewSynoAPI(config *config.Config) *api {
 
 }
 
+//goland:noinspection ALL
 func (api *api) Request(urlDest string, req interface{}, resp interface{}, optionss ...Options) error {
 	options := Options{}
 	if len(optionss) == 1 {

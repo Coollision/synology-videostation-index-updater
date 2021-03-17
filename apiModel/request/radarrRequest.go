@@ -36,7 +36,7 @@ type RemoteMovie struct {
 
 func (r Radarr) Bind(req *http.Request) error {
 	if r.EventType == "" {
-		return errors.New("Field EventType is empty!")
+		return errors.New("field EventType is empty")
 	}
 	if r.Movie.FolderPath == "" {
 		return errors.New("no folderPath was given")

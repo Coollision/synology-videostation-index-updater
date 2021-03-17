@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+	"synology-videostation-reindexer/sonarr_radarrhooks"
 	"synology-videostation-reindexer/sonarr_radarrhooks/radarr"
 	"synology-videostation-reindexer/sonarr_radarrhooks/sonarr"
 	"synology-videostation-reindexer/synology/videostation"
@@ -26,10 +27,10 @@ var version string
 
 //Config the large config struct that contains the whole app config
 type Config struct {
-	LogLevel       string `cfgDefault:"DEBUG"`
+	LogLevel       string `cfgDefault:"INFO"`
 	EnableVideoAPI bool   `cfgDefault:"false"`
-	EnableSonarr   bool   `cfgDefault:"false"`
-	EnableRadarr   bool   `cfgDefault:"false"`
+	Sonarr   sonarr_radarrhooks.HooksConfig
+	Radarr   sonarr_radarrhooks.HooksConfig
 	ServerConfig   api.Config
 	SynologyConfig synoConf.Config
 }
@@ -50,17 +51,15 @@ func main() {
 	synoApi := session.NewSynoSession(&cfg.SynologyConfig, "synoAPi")
 	videoAPI := videostation.NewVideoRequests(synoApi)
 
-	srv := api.NewServer(&cfg.ServerConfig, videoAPI)
+
+
+	srv := api.NewServer(&cfg.ServerConfig)
 
 	if cfg.EnableVideoAPI {
 		srv.ImportHandlers(videoAPI)
 	}
-	if cfg.EnableRadarr {
-		srv.ImportHandlers(radarr.Hooks{})
-	}
-	if cfg.EnableSonarr {
-		srv.ImportHandlers(sonarr.Hooks{})
-	}
+	srv.ImportHandlers(radarr.NewHook(cfg.Radarr,videoAPI))
+	srv.ImportHandlers(sonarr.NewHook(cfg.Sonarr,videoAPI))
 
 	go srv.Start()
 	defer srv.Stop()

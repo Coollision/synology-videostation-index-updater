@@ -34,7 +34,7 @@ func IsErrResponse(err error) (ErrResponse, bool) {
 	return eResp, ok
 }
 
-// ErrorToRenderer checks if a response is an Errresponse, if it is not it will convert the error to an internalServerError
+// ErrorToRenderer checks if a response is an ErrResponse, if it is not it will convert the error to an internalServerError
 func ErrorToRenderer(err error) render.Renderer {
 	if errResp, ok := IsErrResponse(err); ok {
 		return errResp
@@ -77,7 +77,7 @@ func ErrForbidden() ErrResponse {
 		Err:            nil,
 		HTTPStatusCode: http.StatusForbidden,
 		StatusText:     "Forbidden.",
-		ErrorText:      "You have insufficient acces rights, please log in as the correct user",
+		ErrorText:      "You have insufficient access rights, please log in as the correct user",
 	}
 }
 
