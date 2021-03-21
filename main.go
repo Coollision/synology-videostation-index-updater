@@ -40,7 +40,7 @@ func main() {
 
 	cfg := &Config{}
 	goconfig.Path = "./"
-	goconfig.File = "test.toml"
+	goconfig.File = "config.toml"
 	err := goconfig.Parse(cfg)
 	if err != nil {
 		logrus.Fatal(err)
