@@ -39,7 +39,7 @@ func main() {
 	logrus.Infof("version=%s", version)
 
 	cfg := &Config{}
-	goconfig.Path = "./"
+	goconfig.Path = "./config"
 	goconfig.File = "config.toml"
 	err := goconfig.Parse(cfg)
 	if err != nil {
