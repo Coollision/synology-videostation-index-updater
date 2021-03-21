@@ -1,43 +1,17 @@
-version = 0.0.1
+version = "testing_stuff"
 buildtags  = ""
-imagetag = latest
 
-branch=${CI_COMMIT_BRANCH}
 
-dockerTarget = registry.gitlab.com/coollision/synology-videostation-reindexer
+Build: BuildAndRunLocal
 
-# region: stuff for pipelines
-Testing:
-	echo 'not needed'
+RunDocker:
+	docker buildx build --load -t test:new --platform linux/amd64 --build-arg buldtags=$buildtags --build-arg version="${version}" .
+	docker run test:new
 
-Build: buildArm
-
-Dockerize: dockerizeArm publishDockerArm
-
-# endregion
-
-BuildLocal:
+BuildAndRunLocal:
 	go build -v -tags "$buildtags" -ldflags="-X main.version=${version}" -gcflags "all=-N -l"
 	./synology-videostation-reindexer
 
-buildAndPushLocal: buildArm dockerizeArm publishDockerArm
+buildArm64:
+	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -v -tags "$buildtags" -ldflags="-X main.version=${version}" -gcflags "all=-N -l" -o synology-videostation-reindexer-arm64
 
-buildArm:
-	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -v -tags "$buildtags" -ldflags="-X main.version=${version}" -gcflags "all=-N -l"
-
-dockerizeArm:
-	docker build . -t image
-
-publishDockerArm:
-	echo $(branch)
-ifeq ($(branch), master)
-	docker tag synology-videostation-reindexer:latest ${dockerTarget}:latest
-	docker tag synology-videostation-reindexer:latest ${dockerTarget}:${branch}
-	docker tag synology-videostation-reindexer:latest ${dockerTarget}:${version}
-	docker push ${dockerTarget}:latest
-	docker push ${dockerTarget}:${branch}
-	docker push ${dockerTarget}:${version}
-else
-	docker tag image:latest ${dockerTarget}:${branch}-${version}
-	docker push ${dockerTarget}:${branch}-${version}
-endif
