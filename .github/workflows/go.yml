@@ -3,8 +3,9 @@ name: Go
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    name: test go project
     steps:
     - uses: actions/checkout@v2
 
@@ -12,9 +13,72 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16
-
-    - name: Build
-      run: go build -v ./...
-
     - name: Test
-      run: go test -v ./...
+      run: CGO_ENABLED=0 go test -v ./...
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    name: build my go project
+    env:
+      version: 0.0.1
+      buildTags: ""
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+      - name: build arm
+        run: GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -v -tags "$buildTags" -ldflags="-X main.version=$version" -gcflags "all=-N -l"
+      - name: add execute rights
+        run: chmod +x synology-videostation-reindexer
+      - name: upload artefact
+        uses: actions/upload-artifact@v2
+        with:
+          name: synology-videostation-reindexer-arm64
+          path: synology-videostation-reindexer
+#      - name: build darwin
+#        run: GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -v -tags "$buildTags" -ldflags="-X main.version=$version" -gcflags "all=-N -l"
+#      - name: add execute rights
+#        run: chmod +x synology-videostation-reindexer
+#      - name: upload artefact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: synology-videostation-reindexer-darwin
+#          path: synology-videostation-reindexer
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Download a single artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: synology-videostation-reindexer-arm64
+        path: artefacts/
+
+    - name: Display structure of downloaded files
+      run: ls -R
+
+    - name: move downloaded artifact
+      run: mv artefacts/synology-videostation-index-updater synology-videostation-index-updater
+
+    - name: Login to ghcr
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.ghcr_TOKEN }}
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+#      with:
+#        builder: ${{ steps.buildx.outputs.name }}
+#        context: ./app
+#        file: ./app/Dockerfile
+#        target: prod
+#        push: ${{ github.event_name != 'pull_request' }}
+#        tags: ${{ steps.prep.outputs.tags }}
+
