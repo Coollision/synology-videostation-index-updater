@@ -59,11 +59,11 @@ jobs:
         name: synology-videostation-reindexer-arm64
         path: artefacts/
 
-    - name: Display structure of downloaded files
-      run: ls -R
+#    - name: Display structure of downloaded files
+#      run: ls -R
 
     - name: move downloaded artifact
-      run: mv artefacts/synology-videostation-index-updater synology-videostation-index-updater
+      run: mv artefacts/synology-videostation-reindexer synology-videostation-reindexer
 
     - name: Login to ghcr
       uses: docker/login-action@v1
@@ -74,11 +74,6 @@ jobs:
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
-#      with:
-#        builder: ${{ steps.buildx.outputs.name }}
-#        context: ./app
-#        file: ./app/Dockerfile
-#        target: prod
-#        push: ${{ github.event_name != 'pull_request' }}
-#        tags: ${{ steps.prep.outputs.tags }}
-
+      with:
+        push: true
+        tags: coollision/synology-videostation-index-updater:latest
