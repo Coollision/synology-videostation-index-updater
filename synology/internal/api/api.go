@@ -62,7 +62,7 @@ func (api *api) Request(urlDest string, req interface{}, resp interface{}, optio
 	if err != nil {
 		return err
 	}
-	response := &data.Resp{}
+	respData := &data.Resp{}
 
 	////for debugging all responses from syno
 	//dump, err := httputil.DumpResponse(post, true)
@@ -72,18 +72,19 @@ func (api *api) Request(urlDest string, req interface{}, resp interface{}, optio
 	//logrus.WithField("syno","api").Traceln(string(dump))
 
 
-	err = json.NewDecoder(post.Body).Decode(response)
+	err = json.NewDecoder(post.Body).Decode(respData)
 	if err != nil {
 		return err
 	}
 
-	if !response.Success {
-		logrus.WithField("syno", "api").Errorf("failed to get a successful response but got reason: %s", response.Reason)
-		return fmt.Errorf("failed to get a successful response but got reason: %s", response.Reason)
+	if !respData.Success {
+
+		logrus.WithField("syno", "api").Errorf(`failed to get a successful respData but got reason: '%s' and code: '%d' `, respData.Reason, respData.Error.Code)
+		return fmt.Errorf(`failed to get a successful respData but got reason: '%s' and code: '%d' `, respData.Reason, respData.Error.Code)
 	}
 
-	err = mapstructure.Decode(response.Data, resp)
-	logrus.WithField("syno", "api").Tracef("%#v", response)
+	err = mapstructure.Decode(respData.Data, resp)
+	logrus.WithField("syno", "api").Tracef("%#v", respData)
 
 	return err
 }
