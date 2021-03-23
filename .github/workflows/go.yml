@@ -1,7 +1,9 @@
 name: Go
 
-on: [push, pull_request]
-
+on:
+  push:
+    branches-ignore:
+        - master
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -16,28 +18,3 @@ jobs:
     - name: Test
       run: CGO_ENABLED=0 go test -v ./...
 
-  build-and-push-image:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-    - name: Login to ghcr
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.ghcr_TOKEN }}
-    - name: Build and push
-      id: docker_build
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        platforms: linux/amd64,linux/arm64,linux/arm
-        push: true
-        tags: ghcr.io/coollision/synology-videostation-index-updater:latest
-        build-args: |
-          buldtags=
-          version=0.0.1
