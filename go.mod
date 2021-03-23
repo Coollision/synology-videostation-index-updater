@@ -9,7 +9,7 @@ require (
 	github.com/go-chi/render v1.0.1
 	github.com/go-playground/form/v4 v4.1.3
 	github.com/gosidekick/goconfig v1.3.0
-	github.com/mitchellh/mapstructure v1.3.3
+	github.com/mitchellh/mapstructure v1.4.1
 	github.com/oceanicdev/chi-param v1.1.0
 	github.com/sirupsen/logrus v1.8.1
 )
