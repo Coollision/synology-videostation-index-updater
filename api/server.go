@@ -83,7 +83,7 @@ func (s *Server) InitHTTPServer() {
 // Start >>>
 func (s *Server) Start() {
 	if err := s.server.ListenAndServe(); err != http.ErrServerClosed {
-		logrus.Errorf("Failed to start server: %v", err)
+		logrus.Fatalf("Failed to start server: %v", err)
 	}
 }
 

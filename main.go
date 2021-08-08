@@ -9,6 +9,7 @@ import (
 	"synology-videostation-reindexer/sonarr_radarrhooks"
 	"synology-videostation-reindexer/sonarr_radarrhooks/radarr"
 	"synology-videostation-reindexer/sonarr_radarrhooks/sonarr"
+	"synology-videostation-reindexer/synology/testing"
 	"synology-videostation-reindexer/synology/videostation"
 	"syscall"
 	"time"
@@ -50,10 +51,13 @@ func main() {
 
 	synoApi := session.NewSynoSession(&cfg.SynologyConfig, "synoAPi")
 	videoAPI := videostation.NewVideoRequests(synoApi)
+	testApi := testing.NewTestRequests(synoApi)
+
 
 
 
 	srv := api.NewServer(&cfg.ServerConfig)
+	srv.ImportHandlers(testApi)
 
 	if cfg.EnableVideoAPI {
 		srv.ImportHandlers(videoAPI)
