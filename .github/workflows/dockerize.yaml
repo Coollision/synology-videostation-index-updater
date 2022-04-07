@@ -42,7 +42,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm
           push: true
-          tags: ghcr.io/coollision/synology-videostation-index-updater:latest, ghcr.io/coollision/synology-videostation-index-updater:${{ github.sha }},ghcr.io/coollision/synology-videostation-index-updater:0.0.2
+          tags: ghcr.io/coollision/synology-videostation-index-updater:latest, ghcr.io/coollision/synology-videostation-index-updater:${{ github.sha }},ghcr.io/coollision/synology-videostation-index-updater:0.0.3
           build-args: |
             buldtags=
-            version=0.0.2
+            version=0.0.3

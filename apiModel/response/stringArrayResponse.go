@@ -8,7 +8,6 @@ import (
 
 type StringArray []string
 
-
 // Marshal >>>
 func (sr StringArray) Marshal() ([]byte, error) {
 	data, err := json.Marshal(sr)
@@ -18,18 +17,6 @@ func (sr StringArray) Marshal() ([]byte, error) {
 
 	return data, nil
 }
-
-// UnmarshalReportConfig >>>
-func UnmarshalStringArrayResponse(data []byte) (*StringArray, error) {
-	var test []string
-	var config = StringArray(test)
-	if err := json.Unmarshal(data, &config); err != nil {
-		return nil, fmt.Errorf("failed to Unmarshal ReportConfig: %v", err)
-	}
-
-	return &config, nil
-}
-
 
 // Render >>>
 func (sr StringArray) Render(w http.ResponseWriter, r *http.Request) error {

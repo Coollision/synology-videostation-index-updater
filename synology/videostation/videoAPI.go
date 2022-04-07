@@ -12,18 +12,15 @@ var log = logrus.WithField("", "")
 type VideoAPI interface {
 	ListLibraries() ([]string, error)
 	ListSharesIn(string) ([]string, error)
-	ReIndexShare( share string) error
+	ReIndexShare(share string) error
 }
-
 
 type videoAPI struct {
-	api    api.Api
+	api api.Api
 }
 
-
-
 func NewVideoRequests(api api.Api) *videoAPI {
-	return &videoAPI{ api: api}
+	return &videoAPI{api: api}
 }
 
 func (v *videoAPI) ListLibraries() ([]string, error) {
@@ -49,10 +46,10 @@ func (v *videoAPI) ListLibraries() ([]string, error) {
 func (v *videoAPI) ListSharesIn(library string) ([]string, error) {
 	url := "%s/webman/3rdparty/VideoStation/cgi/folder_manage.cgi"
 	req := struct {
-		Action string `form:"action"`
+		Action  string `form:"action"`
 		Section string `form:"section"`
 	}{
-		Action: "list",
+		Action:  "list",
 		Section: library,
 	}
 	resp := &listSharesResponse{}
@@ -72,15 +69,14 @@ func (v *videoAPI) ListSharesIn(library string) ([]string, error) {
 	return shares, nil
 }
 
-
 func (v *videoAPI) ReIndexShare(share string) error {
 	url := "%s/webman/3rdparty/VideoStation/cgi/folder_manage.cgi"
 	req := struct {
 		Action string `form:"action"`
-		Share string `form:"share"`
+		Share  string `form:"share"`
 	}{
 		Action: "reindex-noupdate",
-		Share: share,
+		Share:  share,
 	}
 	resp := &struct{}{}
 	err := v.api.Request(url, req, resp)
@@ -88,5 +84,5 @@ func (v *videoAPI) ReIndexShare(share string) error {
 		panic(err)
 	}
 	log.Infof("reindexing started for share: %s", share)
-	return  nil
+	return nil
 }

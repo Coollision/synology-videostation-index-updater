@@ -27,7 +27,6 @@ func (s *Server) NotImplemented(w http.ResponseWriter, r *http.Request) {
 	response.Render(w, r, response.ErrNotImplemented())
 }
 
-
 func (s Server) addAuthIfNeeded(r chi.Router) {
 	if s.cfg.Authentication {
 		r.Use(middleware.BasicAuth("",

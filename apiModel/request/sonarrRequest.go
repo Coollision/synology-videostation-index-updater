@@ -40,4 +40,3 @@ func (s Sonarr) String() string {
 	marshal, _ := json.Marshal(s)
 	return string(marshal)
 }
-

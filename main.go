@@ -29,8 +29,8 @@ var version string
 type Config struct {
 	LogLevel       string `cfgDefault:"INFO"`
 	EnableVideoAPI bool   `cfgDefault:"false"`
-	Sonarr   sonarr_radarrhooks.HooksConfig
-	Radarr   sonarr_radarrhooks.HooksConfig
+	Sonarr         sonarr_radarrhooks.HooksConfig
+	Radarr         sonarr_radarrhooks.HooksConfig
 	ServerConfig   api.Config
 	SynologyConfig synoConf.Config
 }
@@ -51,15 +51,13 @@ func main() {
 	synoApi := session.NewSynoSession(&cfg.SynologyConfig, "synoAPi")
 	videoAPI := videostation.NewVideoRequests(synoApi)
 
-
-
 	srv := api.NewServer(&cfg.ServerConfig)
 
 	if cfg.EnableVideoAPI {
 		srv.ImportHandlers(videoAPI)
 	}
-	srv.ImportHandlers(radarr.NewHook(cfg.Radarr,videoAPI))
-	srv.ImportHandlers(sonarr.NewHook(cfg.Sonarr,videoAPI))
+	srv.ImportHandlers(radarr.NewHook(cfg.Radarr, videoAPI))
+	srv.ImportHandlers(sonarr.NewHook(cfg.Sonarr, videoAPI))
 
 	go srv.Start()
 	defer srv.Stop()

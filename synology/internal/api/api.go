@@ -21,7 +21,7 @@ type Api interface {
 }
 
 type api struct {
-	client *http.Client
+	client  *http.Client
 	config  *config.Config
 	encoder *form.Encoder
 }
@@ -50,12 +50,13 @@ func (api *api) Request(urlDest string, req interface{}, resp interface{}, optio
 	options.addParams(&dataEncoded)
 
 	url := fmt.Sprintf(urlDest, api.config.Url)
-	logrus.WithField("syno","api").Trace(dataEncoded.Encode())
+	logrus.WithField("syno", "api").Trace(dataEncoded.Encode())
 	request, err := http.NewRequest(http.MethodPost, url, strings.NewReader(dataEncoded.Encode()))
 	if err != nil {
 		return err
 	}
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	options.addHeaders(request)
 
 	//post, err := api.client.PostForm(url, dataEncoded)
 	post, err := api.client.Do(request)
@@ -70,7 +71,6 @@ func (api *api) Request(urlDest string, req interface{}, resp interface{}, optio
 	//	panic(err.Error())
 	//}
 	//logrus.WithField("syno","api").Traceln(string(dump))
-
 
 	err = json.NewDecoder(post.Body).Decode(respData)
 	if err != nil {
