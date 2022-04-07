@@ -1,7 +1,7 @@
 package videostation
 
 type Library struct {
-	Id       int `form:"id,omitempty"`
+	Id       int    `form:"id,omitempty"`
 	IsPublic bool   `form:"is_public,omitempty"`
 	Title    string `form:"title,omitempty"`
 	Type     string `form:"type,omitempty"`

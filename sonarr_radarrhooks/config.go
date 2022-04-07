@@ -3,13 +3,13 @@ package sonarr_radarrhooks
 import "errors"
 
 type HooksConfig struct {
-	Enabled  bool `cfgDefault:"false"`
+	Enabled bool `cfgDefault:"false"`
 	Share   string
 	Library string
 }
 
 func (hc HooksConfig) Validate() error {
-	if !hc.Enabled{
+	if !hc.Enabled {
 		return nil
 	}
 	if hc.Share != "" && hc.Library != "" {

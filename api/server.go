@@ -31,7 +31,7 @@ type Server struct {
 // NewServer >>>
 func NewServer(cfg *Config) *Server {
 	server := &Server{
-		cfg:      cfg,
+		cfg: cfg,
 	}
 
 	server.InitRouter()
@@ -40,8 +40,7 @@ func NewServer(cfg *Config) *Server {
 	return server
 }
 
-
-func (s *Server)ImportHandlers(extension ServerExtension){
+func (s *Server) ImportHandlers(extension ServerExtension) {
 	extension.AddHandlers(s.router, s.addAuthIfNeeded)
 }
 
@@ -83,7 +82,7 @@ func (s *Server) InitHTTPServer() {
 // Start >>>
 func (s *Server) Start() {
 	if err := s.server.ListenAndServe(); err != http.ErrServerClosed {
-		logrus.Errorf("Failed to start server: %v", err)
+		logrus.Fatalf("Failed to start server: %v", err)
 	}
 }
 
@@ -96,7 +95,3 @@ func (s *Server) Stop() {
 		logrus.Errorf("Failed to shutdown server: %v", err)
 	}
 }
-
-
-
-

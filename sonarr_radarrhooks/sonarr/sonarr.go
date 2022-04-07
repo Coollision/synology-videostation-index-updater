@@ -48,9 +48,9 @@ func (h *hook) sonarr(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.Reindex(); err!= nil{
+	if err := h.Reindex(); err != nil {
 		log.Errorf("failed to start reindexing: %e", err)
-		response.Render(w,r,response.ErrInternalServer(err))
+		response.Render(w, r, response.ErrInternalServer(err))
 		return
 	}
 	log.Info("series started reindexing")
