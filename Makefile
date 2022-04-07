@@ -1,11 +1,11 @@
-version = "testing_stuff"
+version = testing_stuff
 buildtags  = ""
 
 
 Build: BuildAndRunLocal
 
 RunDocker:
-	docker buildx build --load -t test:new --platform linux/amd64 --build-arg buldtags=$buildtags --build-arg version="${version}" .
+	docker buildx build --load -t test:new  --progress=plain --platform linux/amd64 --build-arg buildtags=${buildtags} --build-arg version="${version}" .
 	docker run test:new
 
 BuildAndRunLocal:

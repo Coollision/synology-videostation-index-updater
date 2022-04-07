@@ -17,7 +17,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: 1.18
       - name: Test
         run: CGO_ENABLED=0 go test -v ./...
 
@@ -42,7 +42,10 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm
           push: true
-          tags: ghcr.io/coollision/synology-videostation-index-updater:latest
+          tags:
+            - ghcr.io/coollision/synology-videostation-index-updater:latest
+            - ghcr.io/coollision/synology-videostation-index-updater:${{ github.ref }}
+            - ghcr.io/coollision/synology-videostation-index-updater:0.0.2
           build-args: |
             buldtags=
-            version=0.0.1
+            version=0.0.2
