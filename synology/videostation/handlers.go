@@ -1,7 +1,7 @@
 package videostation
 
 import (
-	"github.com/go-chi/chi"
+	chi "github.com/go-chi/chi/v5"
 	param "github.com/oceanicdev/chi-param"
 	"net/http"
 	"synology-videostation-reindexer/apiModel/response"
