@@ -2,12 +2,12 @@ package api
 
 import (
 	"fmt"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
 	"strings"
 	"synology-videostation-reindexer/apiModel/response"
 
-	"github.com/go-chi/chi"
 	"github.com/sirupsen/logrus"
 )
 
