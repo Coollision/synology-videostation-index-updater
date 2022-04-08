@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/Luzifer/go-openssl/v4 v4.1.0
-	github.com/go-chi/chi v4.1.2+incompatible
+	github.com/go-chi/chi v1.5.4
 	github.com/go-chi/cors v1.2.0
 	github.com/go-chi/render v1.0.1
 	github.com/go-playground/form/v4 v4.2.0
