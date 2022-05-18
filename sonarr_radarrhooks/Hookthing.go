@@ -1,6 +1,6 @@
 package sonarr_radarrhooks
 
-import "synology-videostation-reindexer/synology/videostation"
+import "github.com/Coollision/synology-videostation-index-updater/synology/videostation"
 
 type Hook struct {
 	Cfg      HooksConfig

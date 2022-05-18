@@ -4,13 +4,13 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"github.com/Coollision/synology-videostation-index-updater/synology/config"
+	"github.com/Coollision/synology-videostation-index-updater/synology/internal/data"
 	"github.com/go-playground/form/v4"
 	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
-	"synology-videostation-reindexer/synology/config"
-	"synology-videostation-reindexer/synology/internal/data"
 )
 
 type Api interface {

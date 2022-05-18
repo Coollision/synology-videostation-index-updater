@@ -1,4 +1,4 @@
-module synology-videostation-reindexer
+module github.com/Coollision/synology-videostation-index-updater
 
 go 1.18
 

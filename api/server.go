@@ -3,11 +3,11 @@ package api
 import (
 	"context"
 	"fmt"
+	"github.com/Coollision/synology-videostation-index-updater/synology/videostation"
 	"net/http"
-	"synology-videostation-reindexer/synology/videostation"
 	"time"
 
-	mdw "synology-videostation-reindexer/api/middleware"
+	mdw "github.com/Coollision/synology-videostation-index-updater/api/middleware"
 
 	chi "github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

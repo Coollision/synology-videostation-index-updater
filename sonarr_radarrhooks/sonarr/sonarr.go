@@ -1,14 +1,14 @@
 package sonarr
 
 import (
+	"github.com/Coollision/synology-videostation-index-updater/apiModel/request"
+	"github.com/Coollision/synology-videostation-index-updater/apiModel/response"
+	"github.com/Coollision/synology-videostation-index-updater/sonarr_radarrhooks"
+	"github.com/Coollision/synology-videostation-index-updater/synology/videostation"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"synology-videostation-reindexer/apiModel/request"
-	"synology-videostation-reindexer/apiModel/response"
-	"synology-videostation-reindexer/sonarr_radarrhooks"
-	"synology-videostation-reindexer/synology/videostation"
 )
 
 var log = logrus.WithField("hook", "sonarr")

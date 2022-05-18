@@ -1,21 +1,21 @@
 package main
 
 import (
+	"github.com/Coollision/synology-videostation-index-updater/sonarr_radarrhooks"
+	"github.com/Coollision/synology-videostation-index-updater/sonarr_radarrhooks/radarr"
+	"github.com/Coollision/synology-videostation-index-updater/sonarr_radarrhooks/sonarr"
+	"github.com/Coollision/synology-videostation-index-updater/synology/videostation"
 	"os"
 	"os/signal"
 	"reflect"
 	"sort"
 	"strings"
-	"synology-videostation-reindexer/sonarr_radarrhooks"
-	"synology-videostation-reindexer/sonarr_radarrhooks/radarr"
-	"synology-videostation-reindexer/sonarr_radarrhooks/sonarr"
-	"synology-videostation-reindexer/synology/videostation"
 	"syscall"
 	"time"
 
-	"synology-videostation-reindexer/api"
-	synoConf "synology-videostation-reindexer/synology/config"
-	"synology-videostation-reindexer/synology/session"
+	"github.com/Coollision/synology-videostation-index-updater/api"
+	synoConf "github.com/Coollision/synology-videostation-index-updater/synology/config"
+	"github.com/Coollision/synology-videostation-index-updater/synology/session"
 
 	"github.com/gosidekick/goconfig"
 	_ "github.com/gosidekick/goconfig/toml"

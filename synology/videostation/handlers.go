@@ -1,10 +1,10 @@
 package videostation
 
 import (
+	"github.com/Coollision/synology-videostation-index-updater/apiModel/response"
 	chi "github.com/go-chi/chi/v5"
 	param "github.com/oceanicdev/chi-param"
 	"net/http"
-	"synology-videostation-reindexer/apiModel/response"
 )
 
 func (v *videoAPI) AddHandlers(router chi.Router, addAuthIfNeeded func(chi.Router)) {

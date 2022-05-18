@@ -6,10 +6,10 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"github.com/Coollision/synology-videostation-index-updater/synology/internal/api"
+	"github.com/Coollision/synology-videostation-index-updater/synology/internal/data"
 	"github.com/sirupsen/logrus"
 	"math/big"
-	"synology-videostation-reindexer/synology/internal/api"
-	"synology-videostation-reindexer/synology/internal/data"
 )
 
 func (s *synoSession) getEncryptionInfo() (data.RespEncryption, error) {

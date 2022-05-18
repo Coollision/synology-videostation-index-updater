@@ -2,12 +2,12 @@ package session
 
 import (
 	"fmt"
+	"github.com/Coollision/synology-videostation-index-updater/synology/config"
+	"github.com/Coollision/synology-videostation-index-updater/synology/internal/api"
+	"github.com/Coollision/synology-videostation-index-updater/synology/internal/data"
 	"github.com/Luzifer/go-openssl/v4"
 	"github.com/sirupsen/logrus"
 	"net/url"
-	"synology-videostation-reindexer/synology/config"
-	"synology-videostation-reindexer/synology/internal/api"
-	"synology-videostation-reindexer/synology/internal/data"
 	"time"
 )
 

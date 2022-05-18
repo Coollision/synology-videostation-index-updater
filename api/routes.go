@@ -2,11 +2,11 @@ package api
 
 import (
 	"fmt"
+	"github.com/Coollision/synology-videostation-index-updater/apiModel/response"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
 	"strings"
-	"synology-videostation-reindexer/apiModel/response"
 
 	"github.com/sirupsen/logrus"
 )
@@ -38,7 +38,7 @@ func (s Server) addAuthIfNeeded(r chi.Router) {
 
 // Routes >>>
 func (s *Server) Routes() string {
-	routes := "synology-videostation-reindexer API\n\n"
+	routes := "github.com/Coollision/synology-videostation-index-updater API\n\n"
 
 	walkFunc := func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
 		route = strings.ReplaceAll(route, "/*/", "/")

@@ -2,9 +2,9 @@ package videostation
 
 import (
 	"fmt"
+	"github.com/Coollision/synology-videostation-index-updater/synology/internal/api"
+	"github.com/Coollision/synology-videostation-index-updater/synology/internal/data"
 	"github.com/sirupsen/logrus"
-	"synology-videostation-reindexer/synology/internal/api"
-	"synology-videostation-reindexer/synology/internal/data"
 )
 
 var log = logrus.WithField("", "")
