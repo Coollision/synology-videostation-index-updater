@@ -11,7 +11,7 @@ require (
 	github.com/gosidekick/goconfig v1.3.1
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/oceanicdev/chi-param v1.1.0
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.1
 )
 
 require (
