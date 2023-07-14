@@ -6,7 +6,7 @@ require (
 	github.com/Luzifer/go-openssl/v4 v4.1.0
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-chi/cors v1.2.1
-	github.com/go-chi/render v1.0.2
+	github.com/go-chi/render v1.0.3
 	github.com/go-playground/form/v4 v4.2.1
 	github.com/gosidekick/goconfig v1.3.1
 	github.com/mitchellh/mapstructure v1.5.0
