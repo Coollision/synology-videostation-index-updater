@@ -1,10 +1,10 @@
 module github.com/Coollision/synology-videostation-index-updater
 
-go 1.18
+go 1.23
 
 require (
-	github.com/Luzifer/go-openssl/v4 v4.1.0
-	github.com/go-chi/chi/v5 v5.0.10
+	github.com/Luzifer/go-openssl/v4 v4.2.2
+	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/render v1.0.3
 	github.com/go-playground/form/v4 v4.2.1
@@ -16,10 +16,9 @@ require (
 
 require (
 	github.com/ajg/form v1.5.1 // indirect
-	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/go-chi/chi v1.5.4 // indirect
-	github.com/pelletier/go-toml v1.9.4 // indirect
-	golang.org/x/crypto v0.1.0 // indirect
-	golang.org/x/sys v0.1.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	github.com/fsnotify/fsnotify v1.7.0 // indirect
+	github.com/go-chi/chi v1.5.5 // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
+	golang.org/x/crypto v0.28.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
 )
